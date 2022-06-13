@@ -2,8 +2,8 @@
 
 <body>
 Texto: <input type="text" name="texto" id="texto"><br>
-Encript: <input type="text" name="key1" id="key1"><br>
-Decript: <input type="text" name="key2" id="key2"><br>
+Encript: <input type="text" name="textoCriptografado" id="textoCriptografado"><br>
+Decript: <input type="text" name="textoDescriptografado" id="textoDescriptografado"><br>
 <input type="button" id="encript" value="Encrypt">
 <input type="button" id="decript" value="Decript">
 
@@ -55,13 +55,13 @@ async function decryptMessage(key) {
 
     let dec = new TextDecoder();
     //const decryptedValue = document.querySelector(".rsa-oaep .decrypted-value");
-    //const decryptedValue = document.getElementById("key2");
+    //const decryptedValue = document.getElementById("textoDescriptografado");
 	
     //decryptedValue.classList.add('fade-in');
     //decryptedValue.addEventListener('animationend', () => {
       //decryptedValue.classList.remove('fade-in');
     //});
-	document.getElementById("key2").value = dec.decode(decrypted);
+	document.getElementById("textoDescriptografado").value = dec.decode(decrypted);
     //decryptedValue.textContent = dec.decode(decrypted);
   }
   
@@ -77,10 +77,10 @@ async function decryptMessage(key) {
 
     let buffer = new Uint8Array(ciphertext, 0, 5);
     //const ciphertextValue = document.querySelector(".rsa-oaep .ciphertext-value");
-    //const ciphertextValue = document.getElementById("key1");
+    //const ciphertextValue = document.getElementById("textoCriptografado");
     //cipherTextValue.innerHTML = 
-    //document.getElementById("key1").value = `${buffer}...[${ciphertext.byteLength} bytes total]`;
-    document.getElementById("key1").value = buffer;
+    //document.getElementById("textoCriptografado").value = `${buffer}...[${ciphertext.byteLength} bytes total]`;
+    document.getElementById("textoCriptografado").value = buffer;
     //ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
   }
 </script>
