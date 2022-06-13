@@ -1,7 +1,9 @@
 <html>
 
 <body>
-Texto: <input type="text" name="texto" id="texto"><br>
+Text: <input type="text" name="texto" id="texto"><br>
+Key Public: <textArea style="width:300px;height:100px" name="key1" id="key1"></textArea><br>
+Key Private: <textArea style="width:300px;height:100px" name="key2" id="key2"></textArea><br><br>
 Encript: <input type="text" name="textoCriptografado" id="textoCriptografado"><br>
 Decript: <input type="text" name="textoDescriptografado" id="textoDescriptografado"><br>
 <input type="button" id="encript" value="Encrypt">
@@ -61,6 +63,8 @@ async function decryptMessage(key) {
     //decryptedValue.addEventListener('animationend', () => {
       //decryptedValue.classList.remove('fade-in');
     //});
+	//document.getElementById("key2").value=key;
+	exportCryptoKey2(key,"key2");
 	document.getElementById("textoDescriptografado").value = dec.decode(decrypted);
     //decryptedValue.textContent = dec.decode(decrypted);
   }
@@ -80,9 +84,49 @@ async function decryptMessage(key) {
     //const ciphertextValue = document.getElementById("textoCriptografado");
     //cipherTextValue.innerHTML = 
     //document.getElementById("textoCriptografado").value = `${buffer}...[${ciphertext.byteLength} bytes total]`;
+	exportCryptoKey(key,"key1");
     document.getElementById("textoCriptografado").value = buffer;
     //ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
   }
+  
+  /*
+Convert an ArrayBuffer into a string
+from https://developer.chrome.com/blog/how-to-convert-arraybuffer-to-and-from-string/
+*/
+function ab2str(buf) {
+  return String.fromCharCode.apply(null, new Uint8Array(buf));
+}
+
+/*
+Export the given key and write it into the "exported-key" space.
+*/
+async function exportCryptoKey(key,id) {
+  const exported = await window.crypto.subtle.exportKey(
+    "spki",
+    key
+  );
+  const exportedAsString = ab2str(exported);
+  const exportedAsBase64 = window.btoa(exportedAsString);
+  const pemExported = `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`;
+
+  //const exportKeyOutput = document.querySelector(".exported-key");
+  //exportKeyOutput.textContent = pemExported;
+  document.getElementById(id).value = pemExported;
+}
+
+async function exportCryptoKey2(key,id) {
+  const exported = await window.crypto.subtle.exportKey(
+    "pkcs8",
+    key
+  );
+  const exportedAsString = ab2str(exported);
+  const exportedAsBase64 = window.btoa(exportedAsString);
+  const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`;
+
+  //const exportKeyOutput = document.querySelector(".exported-key");
+  //exportKeyOutput.textContent = pemExported;
+  document.getElementById(id).value = pemExported;
+}
 </script>
 </body>
 </html>
