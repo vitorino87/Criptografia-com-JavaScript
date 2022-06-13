@@ -1,0 +1,90 @@
+<html>
+
+<body>
+Texto: <input type="text" name="texto" id="texto"><br>
+Encript: <input type="text" name="key1" id="key1"><br>
+Decript: <input type="text" name="key2" id="key2"><br>
+<input type="button" id="encript" value="Encrypt">
+<input type="button" id="decript" value="Decript">
+
+<script>
+getKey();
+
+function getKey(){
+window.crypto.subtle.generateKey(
+    {
+    name: "RSA-OAEP",
+    // Consider using a 4096-bit key for systems that require long-term security
+    modulusLength: 2048,
+    publicExponent: new Uint8Array([1, 0, 1]),
+    hash: "SHA-256",
+    },
+    true,
+    ["encrypt", "decrypt"]
+  ).then((keyPair) => {
+    //const encryptButton = document.querySelector(".rsa-oaep .encrypt-button");
+    const encryptButton = document.getElementById("encript");
+    encryptButton.addEventListener("click", () => {
+      encryptMessage(keyPair.publicKey);
+    });
+
+    //const decryptButton = document.querySelector(".rsa-oaep .decrypt-button");
+    const decryptButton = document.getElementById("decript");
+    decryptButton.addEventListener("click", () => {
+      decryptMessage(keyPair.privateKey);
+    });
+  });
+}
+
+function getMessageEncoding() {
+    //const messageBox = document.querySelector("#rsa-oaep-message");
+    const messageBox = document.getElementById("texto");
+    let message = messageBox.value;
+    let enc = new TextEncoder();
+    return enc.encode(message);
+}
+  
+async function decryptMessage(key) {
+    let decrypted = await window.crypto.subtle.decrypt(
+      {
+        name: "RSA-OAEP"
+      },
+      key,
+      ciphertext
+    );
+
+    let dec = new TextDecoder();
+    //const decryptedValue = document.querySelector(".rsa-oaep .decrypted-value");
+    //const decryptedValue = document.getElementById("key2");
+	
+    //decryptedValue.classList.add('fade-in');
+    //decryptedValue.addEventListener('animationend', () => {
+      //decryptedValue.classList.remove('fade-in');
+    //});
+	document.getElementById("key2").value = dec.decode(decrypted);
+    //decryptedValue.textContent = dec.decode(decrypted);
+  }
+  
+  async function encryptMessage(key) {
+    let encoded = getMessageEncoding();
+    ciphertext = await window.crypto.subtle.encrypt(
+      {
+        name: "RSA-OAEP"
+      },
+      key,
+      encoded
+    );
+
+    let buffer = new Uint8Array(ciphertext, 0, 5);
+    //const ciphertextValue = document.querySelector(".rsa-oaep .ciphertext-value");
+    //const ciphertextValue = document.getElementById("key1");
+    //cipherTextValue.innerHTML = 
+    //document.getElementById("key1").value = `${buffer}...[${ciphertext.byteLength} bytes total]`;
+    document.getElementById("key1").value = buffer;
+    //ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
+  }
+</script>
+</body>
+</html>
+
+
